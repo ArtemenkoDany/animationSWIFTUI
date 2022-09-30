@@ -1,0 +1,99 @@
+/// 
+UIView animated properties are:
+
+- frame
+  Modify this property to change the view’s size and 
+  position relative to its superview’s coordinate system. 
+  (If the transform property does not contain the identity transform,
+  modify the bounds or center properties instead.)
+  
+- bounds
+  Modify this property to change the view’s size.
+  
+- center
+  Modify this property to change the view’s position relative to 
+  its superview’s coordinate system.
+  
+- transform
+  Modify this property to scale, rotate, or translate the 
+  view relative to its center point. Transformations using this 
+  property are always performed in 2D space. (To perform 3D transformations,
+  you must animate the view’s layer object using Core Animation.)
+
+- alpha
+  Modify this property to gradually change the transparency of the view.
+
+- backgroundColor
+  Modify this property to change the view’s background color.
+  
+- contentStretch
+  Modify this property to change the way the view’s contents are 
+  stretched to fill the available space.
+
+///
+
+
+AddPlaylistButton.alpha = 1
+AddPlaylistButton.isHidden = false
+
+UIView.animate(withDuration: 0.2) {
+  self.AddPlaylistButton.alpha = 0
+  }
+
+// constant could be compiled only after ellement was added to subview
+
+UIView.animate(withDuration: 0.7) {
+  self.AddPlaylistButton.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+        }
+        let constraints = [
+            AddPlaylistButton.bottomAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -200),
+            AddPlaylistButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            AddPlaylistButton.widthAnchor.constraint(equalToConstant: 200),
+            AddPlaylistButton.heightAnchor.constraint(equalToConstant: 60)
+        ]
+NSLayoutConstraint.activate(constraints)
+
+// MARK: Animation:
+fileprivate func animateView(_ viewToAnimate: UIView){
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseIn, animations: {
+            
+            viewToAnimate.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+            
+        }, completion: nil)
+        
+        UIView.animate(withDuration: 0.15, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 2, options: .curveEaseIn, animations: {
+            
+            viewToAnimate.transform = CGAffineTransform(scaleX: 1, y: 1)
+        }, completion: nil )
+    }
+    
+    
+// MARK: with extension
+
+ extension UIView {
+
+func fadeIn(duration: TimeInterval = 0.5, delay: TimeInterval = 0.0, completion: @escaping ((Bool) -> Void) = {(finished: Bool) -> Void in }) {
+    self.alpha = 0.0
+
+    UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
+        self.isHidden = false
+        self.alpha = 1.0
+    }, completion: completion)
+}
+
+func fadeOut(duration: TimeInterval = 0.5, delay: TimeInterval = 0.0, completion: @escaping (Bool) -> Void = {(finished: Bool) -> Void in }) {
+    self.alpha = 1.0
+
+    UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
+        self.alpha = 0.0
+    }) { (completed) in
+        self.isHidden = true
+        completion(true)
+    }
+  }
+}
+
+// usage is as like
+
+yourView.fadeOut()
+yourView.fadeIn()
